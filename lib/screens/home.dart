@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:neungflutter/screens/myservice.dart';
 import 'package:neungflutter/screens/signin.dart';
 import 'package:neungflutter/screens/signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -9,6 +11,22 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   // Explicit
+  @override
+  void initState() {
+    super.initState();
+    checkLogin();
+  }
+
+  Future<void> checkLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final check = prefs.getInt('login') ?? 0;
+    if (check == 1) {
+      MaterialPageRoute materialPageRoute =
+          MaterialPageRoute(builder: (BuildContext context) => MyService());
+      Navigator.of(context).pushAndRemoveUntil(
+          materialPageRoute, (Route<dynamic> route) => false);
+    }
+  }
 
   // Methods
   Widget showLogo() {

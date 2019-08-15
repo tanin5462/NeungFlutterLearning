@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:neungflutter/screens/myservice.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -107,7 +110,6 @@ class _SignInState extends State<SignIn> {
         onPressed: () {
           if (formKey.currentState.validate()) {
             formKey.currentState.save();
-
             myLogin();
           }
         },
@@ -117,24 +119,42 @@ class _SignInState extends State<SignIn> {
 
   Future<void> myLogin() async {
     Firestore firestore = Firestore.instance;
-    await firestore
+    // firestore
+    //     .collection("Account")
+    //     .where("username", isEqualTo: username)
+    //     .where("password", isEqualTo: password)
+    //     .snapshots()
+    //     .listen(
+    //       (data) => data.documents.forEach(
+    //         (doc) => checkLogin = doc.exists,
+    //       ),
+    //     );
+    // Timer(Duration(seconds: 1), () async {
+    //   if (checkLogin) {
+    //     final pref = await SharedPreferences.getInstance();
+    //     pref.setInt('login', 1);
+    //     MaterialPageRoute materialPageRoute =
+    //         MaterialPageRoute(builder: (BuildContext context) => MyService());
+    //     Navigator.of(context).push(materialPageRoute);
+    //   } else {
+    //     print("failed");
+    //   }
+    // });
+
+    firestore
         .collection("Account")
         .where("username", isEqualTo: username)
         .where("password", isEqualTo: password)
         .snapshots()
-        .listen(
-          (data) => data.documents.forEach(
-            (doc) => checkLogin = doc.exists,
-          ),
-        );
-
-    if (checkLogin) {
-      MaterialPageRoute materialPageRoute =
-          MaterialPageRoute(builder: (BuildContext context) => MyService());
-      Navigator.of(context).push(materialPageRoute);
-    } else {
-      print("failed");
-    }
+        .listen((data) => data.documents.forEach((doc) async {
+              if (doc.exists) {
+                final pref = await SharedPreferences.getInstance();
+                pref.setInt('login', 1);
+                MaterialPageRoute materialPageRoute = MaterialPageRoute(
+                    builder: (BuildContext context) => MyService());
+                Navigator.of(context).push(materialPageRoute);
+              }
+            }));
   }
 
   @override
