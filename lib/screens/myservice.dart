@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:neungflutter/screens/bmi_program.dart';
 import 'package:neungflutter/screens/calculator_program.dart';
+import 'package:neungflutter/screens/delivery.dart';
+import 'package:neungflutter/screens/flashcard.dart';
 import 'package:neungflutter/screens/home.dart';
+import 'package:neungflutter/screens/setting.dart';
+import 'package:neungflutter/screens/welcome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyService extends StatefulWidget {
@@ -11,12 +16,9 @@ class MyService extends StatefulWidget {
 
 class _MyServiceState extends State<MyService> {
   // Explicit
-
-  Widget myWidget = MyBmi();
-  String barName = "BMI";
-
+  Widget myWidget = MyWelcome();
+  String barName = "Welcome";
   // Methods
-
   Widget myAppName() {
     return Text(
       "Let's travel",
@@ -51,7 +53,7 @@ class _MyServiceState extends State<MyService> {
 
   Widget myLogo() {
     return Container(
-      width: 80,
+      width: 50,
       child: Image.asset('images/myLogo.png'),
     );
   }
@@ -73,10 +75,29 @@ class _MyServiceState extends State<MyService> {
       ),
       child: Column(
         children: <Widget>[
+          mySetting(),
           myLogo(),
           mySizeBox(),
           myAppName(),
         ],
+      ),
+    );
+  }
+
+  Widget mySetting() {
+    return Container(
+      alignment: Alignment.bottomRight,
+      child: IconButton(
+        iconSize: 30.0,
+        icon: Icon(
+          FontAwesomeIcons.cog,
+          color: Colors.black87,
+        ),
+        onPressed: () {
+          MaterialPageRoute materialPageRoute =
+              MaterialPageRoute(builder: (BuildContext context) => MySetting());
+          Navigator.of(context).push(materialPageRoute);
+        },
       ),
     );
   }
@@ -88,9 +109,53 @@ class _MyServiceState extends State<MyService> {
           myDrawerHead(),
           bmiMenu(),
           calculatorMenu(),
+          myDeliveryMenu(),
+          flashcardMenu(),
           logout()
         ],
       ),
+    );
+  }
+
+  Widget myDeliveryMenu() {
+    return ListTile(
+      leading: Icon(
+        Icons.directions_bike,
+        size: 36.0,
+        color: Colors.green,
+      ),
+      title: Text('Delivery'),
+      onTap: () {
+        setState(() {
+          barName = "Delivery";
+          myWidget = MyDelivery();
+          Navigator.of(context).pop();
+        });
+      },
+    );
+  }
+
+  Widget flashcardMenu() {
+    return ListTile(
+      leading: Icon(
+        Icons.account_box,
+        size: 36.0,
+        color: Colors.green,
+      ),
+      title: Text('Flashcard'),
+      onTap: () {
+        setState(() {
+          barName = "Flashcard";
+          myWidget = MyFlashcard();
+          Navigator.of(context).pop();
+        });
+      },
+    );
+  }
+
+  Widget myFoodDeliveryRow() {
+    return Row(
+      children: <Widget>[],
     );
   }
 
@@ -133,7 +198,7 @@ class _MyServiceState extends State<MyService> {
   Widget logout() {
     return ListTile(
       leading: Icon(
-        Icons.airplay,
+        Icons.subdirectory_arrow_left,
         size: 36.0,
         color: Colors.red,
       ),
@@ -148,6 +213,7 @@ class _MyServiceState extends State<MyService> {
     final prefs = await SharedPreferences.getInstance();
 // set value
     await prefs.setInt('login', 0);
+    await prefs.setString('userId', null);
     MaterialPageRoute materialPageRoute =
         MaterialPageRoute(builder: (BuildContext context) => Home());
     Navigator.of(context)

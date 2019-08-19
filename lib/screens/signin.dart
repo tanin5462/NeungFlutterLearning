@@ -82,7 +82,10 @@ class _SignInState extends State<SignIn> {
       child: Form(
         key: formKey,
         child: Column(
-          children: <Widget>[userNameText(), passwordText()],
+          children: <Widget>[
+            userNameText(),
+            passwordText(),
+          ],
         ),
       ),
     );
@@ -119,42 +122,26 @@ class _SignInState extends State<SignIn> {
 
   Future<void> myLogin() async {
     Firestore firestore = Firestore.instance;
-    // firestore
-    //     .collection("Account")
-    //     .where("username", isEqualTo: username)
-    //     .where("password", isEqualTo: password)
-    //     .snapshots()
-    //     .listen(
-    //       (data) => data.documents.forEach(
-    //         (doc) => checkLogin = doc.exists,
-    //       ),
-    //     );
-    // Timer(Duration(seconds: 1), () async {
-    //   if (checkLogin) {
-    //     final pref = await SharedPreferences.getInstance();
-    //     pref.setInt('login', 1);
-    //     MaterialPageRoute materialPageRoute =
-    //         MaterialPageRoute(builder: (BuildContext context) => MyService());
-    //     Navigator.of(context).push(materialPageRoute);
-    //   } else {
-    //     print("failed");
-    //   }
-    // });
-
     firestore
         .collection("Account")
         .where("username", isEqualTo: username)
         .where("password", isEqualTo: password)
         .snapshots()
-        .listen((data) => data.documents.forEach((doc) async {
+        .listen(
+          (data) => data.documents.forEach(
+            (doc) async {
               if (doc.exists) {
                 final pref = await SharedPreferences.getInstance();
                 pref.setInt('login', 1);
+                pref.setString('userId', doc.documentID);
+                print(doc.documentID);
                 MaterialPageRoute materialPageRoute = MaterialPageRoute(
                     builder: (BuildContext context) => MyService());
                 Navigator.of(context).push(materialPageRoute);
               }
-            }));
+            },
+          ),
+        );
   }
 
   @override

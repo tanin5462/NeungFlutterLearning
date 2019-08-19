@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   cloud_firestore: ^0.12.9
   shared_preferences: ^0.5.3+4
+  font_awesome_flutter: ^8.0.1
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +45,8 @@ flutter:
   assets:
     - images/wallpaper.jpg
     - images/myLogo.png
+    - images/food5.jpg
+    - images/food6.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
